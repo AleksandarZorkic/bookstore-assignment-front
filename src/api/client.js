@@ -18,10 +18,18 @@ export const AuthorApi = {
   getAll: () => api.get("/api/Authors").then((r) => r.data),
   getOne: (id) => api.get(`/api/Authors/${id}`).then((r) => r.data),
   create: (payload) => api.post("/api/Authors", payload).then((r) => r.data),
+  getPage: (pageNumber = 1, pageSize = 5) =>
+    api
+      .get(`/api/Authors/page?pageNumber=${pageNumber}&pageSize=${pageSize}`)
+      .then((r) => r.data),
 };
 
 export const PublisherApi = {
   getAll: () => api.get("/api/Publishers").then((r) => r.data),
   getOne: (id) => api.get(`/api/Publishers/${id}`).then((r) => r.data),
   create: (payload) => api.post("/api/Publishers", payload).then((r) => r.data),
+  getAllSorted: (sort = "NameAsc") =>
+    api
+      .get(`/api/Publishers?sort=${encodeURIComponent(sort)}`)
+      .then((r) => r.data),
 };

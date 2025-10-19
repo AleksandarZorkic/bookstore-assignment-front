@@ -10,6 +10,9 @@ export default function Nav() {
       <Link to="/" className="font-bold">
         Bookstore
       </Link>
+      <NavLink to="/authors" className={active}>
+        Authors
+      </NavLink>
       <NavLink to="/publishers" className={active}>
         Publishers
       </NavLink>
