@@ -7,6 +7,13 @@ export const api = axios.create({
 
 export const BookApi = {
   getAll: () => api.get("/api/Books").then((res) => res.data),
+
+  getAllSorted: (sort = "title_asc") =>
+    api.get(`/api/Books?sort=${encodeURIComponent(sort)}`).then((r) => r.data),
+
+  search: (payload) =>
+    api.post("/api/Books/search", payload).then((r) => r.data),
+
   getOne: (id) => api.get(`/api/Books/${id}`).then((res) => res.data),
   create: (payload) => api.post("/api/Books", payload).then((res) => res.data),
   update: (id, payload) =>
