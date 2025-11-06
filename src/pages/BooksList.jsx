@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthorApi, BookApi } from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 
 const SIMPLE_SORT = [
   { value: "title_asc", label: "Title ↑" },
@@ -27,6 +28,8 @@ export default function BookList() {
   const [authors, setAuthors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
+  const { hasRole, isAuth } = useAuth();
+  const canEditDelete = isAuth && hasRole("Urednik");
 
   const [simpleSort, setSimpleSort] = useState("title_asc");
 
@@ -327,18 +330,22 @@ export default function BookList() {
               <td className="p-2">{b.publisherName}</td>
               <td className="p-2">{b.yearsAgo}</td>
               <td className="p-2 flex gap-2">
-                <Link
-                  className="btn btn--edit btn-sm"
-                  to={`/books/${b.id}/edit`}
-                >
-                  Edit
-                </Link>
-                <button
-                  className="btn btn--danger btn-sm"
-                  onClick={() => onDelete(b.id)}
-                >
-                  Delete
-                </button>
+                {canEditDelete && (
+                  <>
+                    <Link
+                      className="btn btn--edit btn-sm"
+                      to={`/books/${b.id}/edit`}
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      className="btn btn--danger btn-sm"
+                      onClick={() => onDelete(b.id)}
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}

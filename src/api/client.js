@@ -1,10 +1,23 @@
 import axios from "axios";
 
+const TOKEN_KEY = "jwt";
+
+export const tokenStore = {
+  get: () => localStorage.getItem(TOKEN_KEY),
+  set: (t) => localStorage.setItem(TOKEN_KEY, t),
+  clear: () => localStorage.removeItem(TOKEN_KEY),
+};
+
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:5234/",
   headers: { "Content-Type": "application/json" },
 });
 
+api.interceptors.request.use((config) => {
+  const t = tokenStore.get();
+  if (t) config.headers.Authorization = `Bearer ${t}`;
+  return config;
+});
 export const BookApi = {
   getAll: () => api.get("/api/Books").then((res) => res.data),
 
@@ -39,4 +52,10 @@ export const PublisherApi = {
     api
       .get(`/api/Publishers?sort=${encodeURIComponent(sort)}`)
       .then((r) => r.data),
+};
+
+export const AuthApi = {
+  login: (username, password) =>
+    api.post("/api/auth/login", { username, password }).then((r) => r.data),
+  profile: () => api.get("/api/auth/profile").then((r) => r.data),
 };
