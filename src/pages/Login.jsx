@@ -9,6 +9,10 @@ export default function LoginPage() {
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const API_BASE = (
+    import.meta.env.VITE_API_URL ?? "http://localhost:5234/"
+  ).replace(/\/$/, "");
+
   const setField = (k, v) => setForm((s) => ({ ...s, [k]: v }));
 
   const onSubmit = async (e) => {
@@ -57,6 +61,13 @@ export default function LoginPage() {
         >
           {loading ? "Signing in..." : "Login"}
         </button>
+
+        <a
+          className="px-4 py-2 rounded border inline-block"
+          href={`${API_BASE}/api/ExternalAuth/google`}
+        >
+          Continue with Google
+        </a>
       </form>
     </div>
   );

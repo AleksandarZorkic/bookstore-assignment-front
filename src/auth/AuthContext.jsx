@@ -56,9 +56,11 @@ export default function AuthProvider({ children }) {
 
   const login = async (username, password) => {
     const data = await AuthApi.login(username, password);
-    const token = data.Token ?? data.token;
-    if (!token) throw new Error("No token in response");
-    tokenStore.set(token);
+    const t = data.Token ?? data.token;
+    if (!t) throw new Error("No token in response");
+    tokenStore.set(t);
+    setToken(t);
+    setClaims(parseJwt(t));
   };
 
   const logout = () => {

@@ -11,6 +11,7 @@ import LoginPage from "./pages/Login";
 import Forbidden from "./pages/Forbidden";
 import AuthProvider from "./auth/AuthContext";
 import { PrivateRoute, RoleRoute } from "./auth/RouteGuards";
+import OAuthCallback from "./auth/OAuthCallback";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/books" />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/oauth-callback" element={<OAuthCallback />} />
         <Route path="/forbidden" element={<Forbidden />} />
 
         {/* JAVNI prikaz (GET je svima dozvoljen) */}
