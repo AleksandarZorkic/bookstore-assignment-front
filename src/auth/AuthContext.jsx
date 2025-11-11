@@ -48,7 +48,9 @@ export default function AuthProvider({ children }) {
 
   const roles = useMemo(() => {
     if (!claims) return [];
-    const r = claims["role"];
+    const r =
+      claims["role"] ??
+      claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
     return Array.isArray(r) ? r : r ? [r] : [];
   }, [claims]);
 

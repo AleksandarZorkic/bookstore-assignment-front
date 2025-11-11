@@ -59,3 +59,16 @@ export const AuthApi = {
     api.post("/api/auth/login", { username, password }).then((r) => r.data),
   profile: () => api.get("/api/auth/profile").then((r) => r.data),
 };
+
+export const ComicsApi = {
+  searchVolumes: (q) =>
+    api
+      .get(`/api/comics/volumes?q=${encodeURIComponent(q)}`)
+      .then((r) => r.data),
+
+  getIssues: (volumeId) =>
+    api.get(`/api/comics/volumes/${volumeId}/issues`).then((r) => r.data),
+
+  saveIssue: (payload) =>
+    api.post(`/api/comic-issues`, payload).then((r) => r.data),
+};

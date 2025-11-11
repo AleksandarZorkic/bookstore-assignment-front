@@ -24,6 +24,14 @@ export default function Nav() {
         Books
       </NavLink>
 
+      {hasRole("Urednik") && (
+        <>
+          <NavLink to="/comics/volumes" className={active}>
+            Comics: Volumes
+          </NavLink>
+        </>
+      )}
+
       {/* Create book: dozvoljeno svakom prijavljenom */}
       {isAuth && (
         <NavLink to="/books/create" className={active}>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Nav from "./components/nav";
+import Nav from "./components/Nav";
 import BookList from "./pages/BooksList";
 import BookForm from "./pages/BooksForm";
 import { PublisherApi } from "./api/client";
@@ -12,6 +12,9 @@ import Forbidden from "./pages/Forbidden";
 import AuthProvider from "./auth/AuthContext";
 import { PrivateRoute, RoleRoute } from "./auth/RouteGuards";
 import OAuthCallback from "./auth/OAuthCallback";
+import VolumesSearchPage from "./pages/VolumesSearchPage";
+import IssuesSearchPage from "./pages/IssuesSearchPage";
+import IssueCreateForm from "./pages/IssueCreateForm";
 
 export default function App() {
   return (
@@ -44,6 +47,30 @@ export default function App() {
           element={
             <RoleRoute role="Urednik">
               <BookForm mode="edit" />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/comics/volumes"
+          element={
+            <RoleRoute role="Urednik">
+              <VolumesSearchPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/comics/volumes/:volumeId/issues"
+          element={
+            <RoleRoute role="Urednik">
+              <IssuesSearchPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/comics/issues/create"
+          element={
+            <RoleRoute role="Urednik">
+              <IssueCreateForm />
             </RoleRoute>
           }
         />
