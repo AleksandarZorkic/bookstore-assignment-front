@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { AuthorApi, BookApi } from "../api/client";
+import { AuthorApi, BookApi, ReviewApi } from "../api/client";
+import ReviewModal from "../components/ReviewModal";
 import { useAuth } from "../auth/AuthContext";
 
 const SIMPLE_SORT = [
@@ -25,6 +26,7 @@ const SEARCH_DIRECTION = [
 
 export default function BookList() {
   const [rows, setRows] = useState([]);
+  const [modalBook, setModalBook] = useState(null);
   const [authors, setAuthors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
@@ -155,6 +157,19 @@ export default function BookList() {
   useEffect(() => {
     if (!isInSearchMode()) loadSorted(simpleSort);
   }, [simpleSort]);
+
+  const openReview = (book) => setModalBook(book);
+  const closeReview = () => setModalBook(null);
+
+  const submitReview = async ({ rating, comment }) => {
+    const newAvg = await ReviewApi.create(modalBook.id, { rating, comment });
+    console.log("NEW AVG from API:", newAvg, typeof newAvg);
+    setRows((prev) =>
+      prev.map((b) =>
+        b.id === modalBook.id ? { ...b, averageRating: newAvg } : b
+      )
+    );
+  };
 
   if (loading && rows.length === 0)
     return <div className="p-4">Loading books…</div>;
@@ -318,6 +333,7 @@ export default function BookList() {
             <th className="p-2">Author</th>
             <th className="p-2">Publisher</th>
             <th className="p-2">Years ago</th>
+            <th className="p-2">Average rating</th>
             <th className="p-2">Actions</th>
           </tr>
         </thead>
@@ -329,6 +345,11 @@ export default function BookList() {
               <td className="p-2">{b.authorFullName}</td>
               <td className="p-2">{b.publisherName}</td>
               <td className="p-2">{b.yearsAgo}</td>
+              <td className="p-2">
+                {Number.isFinite(Number(b.averageRating))
+                  ? Number(b.averageRating).toFixed(2)
+                  : "0.00"}
+              </td>
               <td className="p-2 flex gap-2">
                 {canEditDelete && (
                   <>
@@ -346,18 +367,37 @@ export default function BookList() {
                     </button>
                   </>
                 )}
+                {isAuth ? (
+                  <button
+                    className="btn btn--primary btn-sm"
+                    onClick={() => openReview(b)}
+                  >
+                    Review
+                  </button>
+                ) : (
+                  <span className="text-gray-500 text-sm">
+                    Prijavite se za ocenjivanje
+                  </span>
+                )}
               </td>
             </tr>
           ))}
           {rows.length === 0 && (
             <tr>
-              <td className="p-2" colSpan={6}>
+              <td className="p-2" colSpan={7}>
                 No data.
               </td>
             </tr>
           )}
         </tbody>
       </table>
+      {modalBook && (
+        <ReviewModal
+          book={modalBook}
+          onSubmit={submitReview}
+          onClose={closeReview}
+        />
+      )}
     </div>
   );
 }

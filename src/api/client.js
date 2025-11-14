@@ -72,3 +72,12 @@ export const ComicsApi = {
   saveIssue: (payload) =>
     api.post(`/api/comic-issues`, payload).then((r) => r.data),
 };
+
+export const ReviewApi = {
+  create: (bookId, payload) =>
+    api.post(`/api/books/${bookId}/reviews`, payload).then((r) => {
+      const v = r.data;
+      const n = typeof v === "number" ? v : v?.averageRating;
+      return Number(n);
+    }),
+};
